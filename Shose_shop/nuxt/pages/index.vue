@@ -26,7 +26,7 @@
             <span>{{i.description}}</span>
             <div class="bottom clearfix">
               <time class="time">time</time>
-              <el-button type="text" class="button">Operating button</el-button>
+              <el-button type="text" class="button">Add to card</el-button>
             </div>
           </div>
         </el-card>
@@ -34,11 +34,17 @@
     </el-row>
 
 
+    <video autoplay="" loop="" playsinline="" class="css-10f9kvm u-full-width u-full-height css-3p6im7" tabindex="-1" muted="">
+      <source src="/videos/video_nike.webm" type="video/webm">
+      <!-- <source src="https://c.static-nike.com/a/videos/q_90/fnpfrqywv44pehh8o1ug/video.mp4" type="video/mp4">
+      <source src="https://c.static-nike.com/a/videos/q_90/fnpfrqywv44pehh8o1ug/video.ogg" type="video/ogg"> -->
+      </video>
+
+
 
   </div>
 </div>
 
-<!-- <p v-scroll="300">Stick me 70px from the top of the page</p> -->
 
 
 

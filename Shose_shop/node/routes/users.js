@@ -4,7 +4,7 @@ const db = require('../models')
 const cors = require('cors')
 const User = db.users;
 const fs = require('fs')
-
+const jwt = require ('passport-jwt')
 var bCrypt = require('bcrypt-nodejs');
 
 const cookieParser = require('cookie-parser');
@@ -32,39 +32,51 @@ router.use(passport.session({secret : "techmaster"})); // persistent login sessi
 
 
 
-// router.post('/login', passport.authenticate('local'), async (req, res) => {
-//     // If this function gets called, authentication was successful.
-//     // `req.user` contains the authenticated user.
-//     const data = req.body
-//     const {email} = data.email
-//     const newUer = await User.findOne({ where: { email } });
-//     if(newUer){
-//       console.log('da co user :');
-//     } console.log('chua co ok :', );
+router.post('/login', async (req, res) => {
+    // If this function gets called, authentication was successful.
+    // `req.user` contains the authenticated user.
+    const data = req.body
+    const {email , password} = req.body
+    try {
+      const loginUser = await User.findOne({ where: { email : email } });
+      if(!loginUser){
+        return res.status(400).json({ httpCode: 400, message: "Email không tồn tại" })
+      } 
+    
+    const match = await bCrypt.compare(password, loginUser.password);
+    if(match) {
+        //login
+        return res.status(400).json({ httpCode: 400, message: "Đăng nhập thành công" })
+    }else{
+      return res.status(400).json({ httpCode: 400, message: "Mật khẩu ko đúng" })
+    }
+    } catch (error) {
+      throw Error(error.message)
+    }
 
-//     // res.redirect('/user/' + req.user.username);
-//   });
+    // res.redirect('/user/' + req.user.username);
+  });
 
 
-// router.get('/login', function(req, res) {
-//   res.sendFile(__dirname + '/index.html');
-// })
-// router.post('/login', passport.authenticate('local', {failureRedirect: '/login',
-//                                                       successRedirect: '/user'}))
+router.get('/signup', function(req, res) {
+  res.sendFile(__dirname + '/index.html');
+})
+router.post('/signup', passport.authenticate('jwt', { session: false }))
 
-// passport.use(new LocalStrategy(
-// (username, password, done) =>{
-//   const user = User.findOne({where : {email : username}})
-//     if(user){
-//       return done(null, user)
-//     }else {
-//       return done(null, false)
-//     }
-//   }
-// ))
-// passport.serializeUser((user, done)=>{
-//   done(null, user.usr)
-// })
+passport.use(new LocalStrategy(
+(username, password, done) =>{
+  const user = User.findOne({where : {email : username}})
+    if(user){
+      return done(null, user)
+    }else {
+      return done(null, false)
+    }
+  }
+))
+passport.serializeUser((user, done)=>{
+  done(null, user.usr)
+})
+
 
 
 
@@ -142,6 +154,32 @@ router.use(passport.session({secret : "techmaster"})); // persistent login sessi
 //   })(req, res, next);
 // });
 
+const nodemailer = require('nodemailer')
+const PORT = 3000
+const sendEmail = async (receiverEmail, password) => {	    
+    try {
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: "quoctung.haui@gmail.com", 
+                pass: "Hung2011"
+            }
+        })
+        let mailOptions = {
+            from: '"Techmaster Test" <quoctung.haui@gmail.com>', //Email người gửi
+            to: receiverEmail, 
+            subject: 'Activate email',         
+            html: `<h1>Please click here to activate your account:</h1>
+                   http://${require('os').hostname()}:${PORT}/users/activateUser?password=${password}&email=${receiverEmail}` 
+        }
+        let info = await transporter.sendMail(mailOptions)
+        console.log('Message sent: %s', info.messageId);
+    } catch(error) {
+        throw error
+    }
+}
+
+
 
 
 /* GET user listing. */
@@ -168,13 +206,13 @@ router.get('/user/:id', async (req, res) =>{
   }
 })
 
-
 router.post('/user', cors() ,  async (req, res) => {
   
   const data = req.body;
-  let {email , name} = req.body
+  let {email , name , password} = req.body
 
   const emailUpdate = await User.findOne({ where: { email } });
+  
   try {
     // validation cho data
     if (emailUpdate) {
@@ -189,14 +227,43 @@ router.post('/user', cors() ,  async (req, res) => {
       return res.status(400).json({  httpCode: 400, message: 'Tên không đươc chứa ký tự đặc biệt'  })
     }
     // if(validation.status){
-      //add user
+    //add user
+    //  const encodePassword = await bCrypt.hash(password , 10)
       var response = await User.create(data);
+      await sendEmail(email, password)
       if (response) {
-        res.status(200).json({ httpCode: 200, result: response })
+        res.status(200).json({ httpCode: 200, result: response , message: 'Đăng ký thành công, mở email để kích hoạt'})
       } else
       res.status(200).json({ httpCode: 400, message: 'Lỗi' })
   } catch (error) {
     throw Error(error.message)
+  }
+})
+
+const activateUser = async (email, password) => {
+  try {
+      let foundUser = await User.findOne({email, password})
+      if (!foundUser) {
+          throw "Không tìm thấy User để kích hoạt"
+      }    
+      if (foundUser.active === false) {
+          foundUser.active = true
+          await foundUser.save()            
+      } else {
+          throw "User đã kích hoạt"//foundUser.active = 1
+      }
+  } catch(error) {        
+      throw error       
+  }
+}
+
+router.get('/activateUser', async (req, res) => {
+  const {email, password  } = req.params
+  try {
+    await activateUser(email, password)
+    res.status(200).json({ httpCode: 400, message: 'Kich hoat thanh cong' })
+  } catch (error) {
+    throw error       
   }
 })
 

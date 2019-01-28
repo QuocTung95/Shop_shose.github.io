@@ -6,7 +6,19 @@ module.exports =   (sequelize, DataTypes) => {
     email: { type: DataTypes.STRING, field: 'email' },
     phone: { type: DataTypes.STRING, field: 'phone' },
     password: { type: DataTypes.STRING, field: 'password' },
-  }, {timestamps: false});
+    active: { type: DataTypes.BOOLEAN, field: 'active' },
+  }, {timestamps: false,
+  //   instanceMethods: {
+  //     generateHash(password) {
+  //         return bcrypt.hash(password, bcrypt.genSaltSync(8));
+  //     },
+  //     validPassword(password) {
+  //         return bcrypt.compare(password, this.password);
+  //     }
+  // }
+  }
+  
+  );
   users.associate = function(models) {
     // associations can be defined here
     // users.hasOne(models.cards, {

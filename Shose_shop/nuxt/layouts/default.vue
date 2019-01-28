@@ -61,17 +61,20 @@
 
     <nuxt/>
 
+    <!-- FOOTER -->
 
-      <div class="footer-page">FOOTTER HERE</div>
+    <footerSide />
 
   </div>
 </template>
 
 <script>
 import loginModel from "../components/login";
-  export default {
+import footerSide from "../components/footer";
+export default {
     components : {
-      loginModel : loginModel
+      loginModel : loginModel,
+      footerSide : footerSide
     },
     data() {
       return {
