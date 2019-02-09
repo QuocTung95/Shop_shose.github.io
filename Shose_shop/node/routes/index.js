@@ -3,7 +3,8 @@ var router = express.Router();
 const brandsRouter = require('./brands');
 const productRouter = require('./products');
 const userRoter = require('./users');
-const cardRouter = require('./cards')
+const cardRouter = require('./cards');
+const loginRouter = require('./login');
 
 
 
@@ -11,6 +12,7 @@ router.use('/', brandsRouter )
 router.use('/', productRouter )
 router.use('/', userRoter)
 router.use('/', cardRouter)
+router.use('/', loginRouter)
 
 
 /* GET home page. */

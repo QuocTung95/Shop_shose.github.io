@@ -30,7 +30,6 @@ var upload = multer({ storage: storage })
 
 
 router.get('/products', cors(), async (req, res, next) => {
-
     try {
         const response = await products.findAll();
         res.status(200).json({ response})

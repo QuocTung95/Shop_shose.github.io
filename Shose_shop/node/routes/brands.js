@@ -30,7 +30,6 @@ router.get('/brands', cors(), async (req, res, next) => {
 
 router.get('/brands/:id', async (req, res) => {
     const { id } = req.params;
-    console.log('id :', id);
     try {
         let brand = await brands.findAll({
             // attributes: ['name'],
@@ -43,7 +42,6 @@ router.get('/brands/:id', async (req, res) => {
                 required: false
             }
         });
-        // console.log('brand :', brand);
         if (brand.length > 0) {
             res.json({
                 result: 'ok',

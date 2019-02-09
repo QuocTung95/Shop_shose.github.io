@@ -1,121 +1,59 @@
-import jwtSecret from './jwtConfig';
-import bcrypt from 'bcrypt';
-import Sequelize from 'sequelize';
+const db = require('../models');
+const User = db.users;
+const passport = require('passport');
+const facebookStrategy = require('passport-facebook').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const keys = require('./keys');
 
-const BCRYPT_SALT_ROUNDS = 12;
-const Op = Sequelize.Op;
+passport.serializeUser((user, done) =>{
+    console.log('user :', user);
+    done(null, user.dataValues.id)  
+})
 
-const passport = require('passport'),
-  localStrategy = require('passport-local').Strategy,
-  User = require('../sequelize'),
-  JWTstrategy = require('passport-jwt').Strategy,
-  ExtractJWT = require('passport-jwt').ExtractJwt;
+passport.deserializeUser((idIncoki, done) =>{
+const userrecord = User.findOne({where : {id : idIncoki}})
+console.log('idIncoki :', idIncoki);
+
+if(userrecord){
+  return done(null, userrecord)
+} else{
+  return done(null, false)
+}
+})
+
 
 passport.use(
-  'register',
-  new localStrategy(
-    {
-      usernameField: 'username',
-      passwordField: 'password',
-      passReqToCallback: true,
-      session: false,
-    },
-    (req, username, password, done) => {
-      try {
-        User.findOne({
-          where: {
-            [Op.or]: [
-              {
-                username: username,
-              },
-              { email: req.body.email },
-            ],
-          },
-        }).then(user => {
-          if (user != null) {
-            console.log('username or email already taken');
-            return done(null, false, {
-              message: 'username or email already taken',
-            });
-          } else {
-            bcrypt.hash(password, BCRYPT_SALT_ROUNDS).then(hashedPassword => {
-              User.create({
-                username,
-                password: hashedPassword,
-                email: req.body.email,
-              }).then(user => {
-                console.log('user created');
-                return done(null, user);
-              });
-            });
-          }
-        });
-      } catch (err) {
-        done(err);
-      }
-    },
-  ),
+    new GoogleStrategy({
+        // options for google strategy
+        clientID: keys.google.clientID,
+        clientSecret: keys.google.clientSecret,
+        callbackURL: '/auth/google/redirect'
+    }, async () => {
+        // passport callback function
+        // console.log('profile :', profile);
+        // try {
+        //     const user = await User.findOne({where: {id : Number(profile.id)}})
+        //     if(user){ console.log('message : user already taken');
+        //     }
+        //     else{
+        //        const newUser = await User.create({name: profile.name.familyName + profile.name.givenName})
+        //        console.log('newUser :', newUser);
+        //     }
+        // } catch (error) {
+        //     throw Error(error.message)
+        // }
+        
+        
+    })
 );
-
 passport.use(
-  'login',
-  new localStrategy(
-    {
-      usernameField: 'username',
-      passwordField: 'password',
-      session: false,
-    },
-    (username, password, done) => {
-      try {
-        User.findOne({
-          where: {
-            username: username,
-          },
-        }).then(user => {
-          if (user === null) {
-            return done(null, false, { message: 'bad username' });
-          } else {
-            bcrypt.compare(password, user.password).then(response => {
-              if (response !== true) {
-                console.log('passwords do not match');
-                return done(null, false, { message: 'passwords do not match' });
-              }
-              console.log('user found & authenticated');
-              return done(null, user);
-            });
-          }
-        });
-      } catch (err) {
-        done(err);
-      }
-    },
-  ),
-);
+  new facebookStrategy({
+      // options for google strategy
+      clientID: keys.facebook.clientID,
+      clientSecret: keys.facebook.clientSecret,
+      callbackURL: '/auth/facebook/redirect'
+  }, () => {
+      // passport callback function
 
-const opts = {
-  jwtFromRequest: ExtractJWT.fromAuthHeaderWithScheme('JWT'),
-  secretOrKey: jwtSecret.secret,
-};
-
-passport.use(
-  'jwt',
-  new JWTstrategy(opts, (jwt_payload, done) => {
-    try {
-      User.findOne({
-        where: {
-          id: jwt_payload.id,
-        },
-      }).then(user => {
-        if (user) {
-          console.log('user found in db in passport');
-          done(null, user);
-        } else {
-          console.log('user not found in db');
-          done(null, false);
-        }
-      });
-    } catch (err) {
-      done(err);
-    }
-  }),
+  })
 );

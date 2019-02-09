@@ -1,3 +1,4 @@
 module.exports = {
-    secret: 'jwt-secret',
-  };
+  // database: 'mongodb://localhost:27017/meanauth',
+  secret: 'yoursecret'
+}

@@ -81,12 +81,11 @@ export default {
         activeIndex: '1',
         activeIndex2: '1',
         isLogin: false,
-      };
+      };  
     },
     methods: {
       showLogin () {
-        this.isLogin = true
-        console.log('ok :', );
+        this.isLogin = !this.isLogin
       }
     },
 }
@@ -129,7 +128,7 @@ html {
   z-index: 5;
 }
 .showLogin{
-  display: block;
+  display: block!important;
 }
 
 

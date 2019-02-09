@@ -70,14 +70,13 @@ async fetch ({ store }) {
   },
   mounted(){
       this.handleScroll()
+      let cooki = document.cookie
+      console.log('cooki :', cooki);
           },
-
-
 
 // async asyncData({$axios}) {
 //         const data = await $axios.$get('http://localhost:8080/users/13')
 //         let user = data.response
-//         console.log( user);
 //         return {user}
 //   },
   
@@ -89,10 +88,8 @@ async fetch ({ store }) {
     //       try {
     //     const response = await $axios.$get('http://localhost:8080/users/4')
     //     var user2 = response.result
-    //     console.log(user2)
     //     return { user2 }
     // } catch (error) {
-    //   console.log('error');
     // }
     // },
   //     async asyncData({ $axios }) {
@@ -102,7 +99,6 @@ async fetch ({ store }) {
   //       var tung = response.result
   //       return { tung }
   //   } catch (error) {
-  //     console.log('error');
   //   }
   // },
 

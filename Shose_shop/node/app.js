@@ -1,17 +1,19 @@
 const createError = require('http-errors');
 const express = require('express');
 const app = express();
+const cookieSession = require('cookie-session');
 const cors = require('cors')
 const path = require('path');
-const cookieParser = require('cookie-parser');
+var cookieParser = require('cookie-parser')
+const keys = require('./config/keys')
 const logger = require('morgan');
 const env = require('dotenv').load();
 var exphbs = require('express-handlebars')
 const indexRouter = require('./routes/index');
-const passport   = require('passport')
-const session    = require('express-session')
 const bodyParser = require('body-parser')
-
+const passport = require('passport')
+const session = require('express-session')
+const passportSetup = require('./config/passport');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -29,23 +31,29 @@ app.use(function (req, res, next) {
 );
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')));
 // Boydy parser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// For Passport
- 
-app.use(session({ secret: 'keyboard cat',resave: true, saveUninitialized:true})); // session secret
- 
+// Passport khởi tạo
+// app.use(session({secret : 'quoctung'}))
+app.use(cookieSession({
+  maxAge: 24 * 60 * 60 * 1000,
+  keys: [keys.session.cookieKey]
+}));
 app.use(passport.initialize());
- 
-app.use(passport.session()); // persistent login sessions
+app.use(passport.session());
 
 
+app.get('/private', (req, res) =>{
+  if(req.isAuthenticated()){
+    res.send('wellcom')
+  } else {
+    res.send('pls log in')
+  }
+})
 
 app.use('/', indexRouter);
 

@@ -8,14 +8,6 @@ module.exports =   (sequelize, DataTypes) => {
     password: { type: DataTypes.STRING, field: 'password' },
     active: { type: DataTypes.BOOLEAN, field: 'active' },
   }, {timestamps: false,
-  //   instanceMethods: {
-  //     generateHash(password) {
-  //         return bcrypt.hash(password, bcrypt.genSaltSync(8));
-  //     },
-  //     validPassword(password) {
-  //         return bcrypt.compare(password, this.password);
-  //     }
-  // }
   }
   
   );
