@@ -1,6 +1,6 @@
 var express = require('express');
 const db = require('../models')
-const products = db.products;
+const Products = db.products;
 const brands = db.brands;
 const typeProducts = db.typeProducts
 // const TypeProducts = db.TypeProducts;
@@ -16,7 +16,7 @@ var multer = require('multer');
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     // cb(null, 'image/')
-    cb(null, './images/product/')
+    cb(null, 'images/product')
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname )
@@ -31,7 +31,7 @@ var upload = multer({ storage: storage })
 
 router.get('/products', cors(), async (req, res, next) => {
     try {
-        const response = await products.findAll();
+        const response = await Products.findAll();
         res.status(200).json({ response})
     } catch (error) {
         throw Error(error.message)
@@ -40,7 +40,7 @@ router.get('/products', cors(), async (req, res, next) => {
 router.get('/products/:id', cors(), async (req, res, next) => {
     const {id} = req.params
     try {
-        const response = await products.findOne({ where : {id}});
+        const response = await Products.findOne({ where : {id}});
         res.status(200).json({ response})
     } catch (error) {
         throw Error(error.message)
@@ -52,11 +52,11 @@ router.put('/products/:id', cors() , async (req, res, next) =>{
     const test = '';
     // Select * from shipper where id = id;
     try {
-      const product = await products.findOne({ where: { id } })
+      const product = await Products.findOne({ where: { id } })
       if (!product) {
         return res.status(400).json({ httpCode: 400, message: 'product khong ton tai trong he thong', name: "UPDATE_product_ERROR" })
       }
-      const response = await products.update(data, { where: { id }, returning: true });
+      const response = await Products.update(data, { where: { id }, returning: true });
       if (response)
         res.status(200).json({ response: response, httpCode: 200 })
       else next();
@@ -70,7 +70,7 @@ router.post('/upload', cors() , upload.single('images'), async (req, res) => {
     // validation cho data
     try {
       // insert into products values (,);
-      const response = await products.create(data);
+      const response = await Products.create(data);
       if (response) {
         res.status(200).json({ httpCode: 200, result: response })
       }
@@ -78,6 +78,18 @@ router.post('/upload', cors() , upload.single('images'), async (req, res) => {
       throw Error(error.message)
     }
 })
+
+// DELETE PRODUCT
+router.delete('/product/delete/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const response = await Products.destroy({ where: { id } })
+    res.status(200).json({ httpCode: 200, message: "xoa thanh cong" });
+  } catch (error) {
+    throw Error(error.message)
+  }
+})
+
 
 // router.get('/upload', function(req, res) {
 //   res.sendFile(__dirname + '/index.html');

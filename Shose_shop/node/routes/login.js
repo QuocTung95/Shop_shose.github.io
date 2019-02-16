@@ -7,10 +7,13 @@ const bodyParser = require('body-parser')
 const router = express.Router();
 var cookieParser = require('cookie-parser')
 const CookieStrategy = require('passport-cookie')
+const jwt = require('jsonwebtoken')
+
+
 
 //Passport
 var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
+
 // const session = require('express-session')
 router.use(cookieParser())
 
@@ -24,16 +27,48 @@ router.use(bodyParser.json());
 // router.use(passport.session());
 
 const authCheck = (req, res, next) => {
-  if(!req.user){
+  if(!req.isAuthenticated()){
       res.send('you need to login')
+      console.log('req.cookies :', req.cookies); 
   } else {
       next();
   }
 };
 
-router.get('/profile', authCheck, (req, res) => {
-  res.send('welcome');
+
+router.get('/me', authCheck, async (req, res) =>{
+  try {
+    res.json({userId: req._passport.session.user , status: true})
+  } catch (error) {
+    throw Error(error.message)
+  }
+
+})
+
+
+// router.get('/current-user', async (req, res) =>{
+//   try {
+//     if(req.isAuthenticated()){
+//       res.json({userId: req._passport.session.user , status: true})
+      
+//     } else {
+//       res.json({message : 'please log in'})
+//     }
+//   } catch (error) {
+//     throw Error(error.message)
+//   }
+// })
+
+router.get('/current-user', function(req, res) {
+  var token = req.headers['x-access-token'];
+  if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+  
+  jwt.verify(token, 'quoctung', function(err, decoded) {
+    if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+    res.status(200).send(decoded);
+  });
 });
+
 
 // auth logout
 router.get('/logout', function(req, res){
@@ -67,29 +102,7 @@ router.get('/auth/facebook/redirect', (req, res) => {
 
 
 
-passport.use(new LocalStrategy(
-  {
-    usernameField: 'email',
-    passwordField: 'password',
-    //are there other options?
-    //emailField did not seem to do anything
-    passReqToCallback: true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
-},
-    async (req, email, password, done) =>{
-        const user = await User.findOne({where : {email : email}})
-        if(!user){
-            return done(null, false, { message: 'Incorrect username.' })
-        }
-        const passwordUser = user.dataValues.password
-        const isValidPass = await bcrypt.compare(password, passwordUser);
-        if(user && isValidPass){
-            return done(null, user)
-        }
-        else{
-            return done(null, false , { message: 'Incorrect password.' })
-        }
-        }
-    ))
+
 
 
 router.get('/login' ,(req, res)=>{res.sendFile(__dirname + '/index.html')})
@@ -99,7 +112,9 @@ router.post('/login', cors(), function (req, res, next) {
     if (!user) { return  res.json({message: 'user không tồn tại', status: false})}//res.redirect('/login'); }
     req.logIn(user, function(err) {
       if (err) { return res.json({message: 'sth wrong', status: false}) }
-      res.json({message: 'hihi lam gi lam di' , status: true})
+      console.log('user in cookiefasdf :', user.dataValues.id);
+      var token = jwt.sign({ id: user.dataValues.id }, 'quoctung', {expiresIn: 86400 });// expires in 24 hours
+      res.json({message: 'log in thanh cong' , id: user.id,  status: true , token})
       // return res.redirect('/user/');
     });
   })(req, res, next);
@@ -127,15 +142,15 @@ router.post('/register',  async (req, res) => {
     try {
       // validation cho data
       if (emailUpdate) {
-        return res.status(400).json({  httpCode: 400, message: 'email đã tồn tại trong hệ thống'  })
+        return res.json({  httpCode: 400, message: 'email đã tồn tại trong hệ thống' , status: false })
       }
       const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       if (!emailRegex.test(email)) {
-        return res.status(400).json({  httpCode: 400, message: 'email không đúng định dạng'  })
+        return res.json({  httpCode: 400, message: 'email không đúng định dạng' , status: false })
       }
       const nameRegex = /^([a-zA-Z ]){2,30}$/;
       if (!nameRegex.test(name)) {
-        return res.status(400).json({  httpCode: 400, message: 'Tên không đươc chứa ký tự đặc biệt'  })
+        return res.json({  httpCode: 400, message: 'Tên không đươc chứa ký tự đặc biệt' , status: false })
       }
       var salt = await bcrypt.genSalt(10);
       let hashPass = await bcrypt.hash(password, salt);
@@ -149,13 +164,16 @@ router.post('/register',  async (req, res) => {
         });
 
         // await sendEmail(email, password)
+        
         if (response) {
-          res.status(200).json({ httpCode: 200, result: response , message: 'Đăng ký thành công, mở email để kích hoạt'})
+          return res.json({ httpCode: 200, result: response , message: 'Đăng ký thành công, mở email để kích hoạt', status: true})
         } else
-        res.status(200).json({ httpCode: 400, message: 'Lỗi' })
+        return res.json({ httpCode: 400, message: 'Lỗi' , status: false})
     } catch (error) {
       throw Error(error.message)
     }
   })
+
+
 
 module.exports = router;

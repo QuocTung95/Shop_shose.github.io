@@ -11,6 +11,7 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@nuxtjs/auth": "^4.5.3",
     "@nuxtjs/axios": "^5.3.6",
     "axios": "^0.18.0",
     "cross-env": "^5.2.0",
@@ -18,6 +19,7 @@
     "express": "^4.16.3",
     "nuxt": "^2.3.4",
     "nuxt-fontawesome": "^0.4.0",
+    "vue-cookie": "^1.1.4",
     "vue-cookies": "^1.5.12",
     "vue-scroll": "^2.1.9",
     "vuex": "^3.0.1"

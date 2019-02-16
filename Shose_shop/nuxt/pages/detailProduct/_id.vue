@@ -1,26 +1,25 @@
 <template>
 
-<div id="wrap-detail-product">
-    <div class="text-center"><p>SOMETHING HERE</p></div>
-    <el-row>
-    <el-col :span="8" class="padding">
-        <div>
-            <img class="img-product" :src="`/images/product/${product.image}.jpg`" alt="">
-        </div>
-    </el-col>
+<div id="detail-product-page">
+    <div class="child-center"><p>{{product.name}}</p></div>
+    <!-- Row -->
+    <el-row class="wrap-detail-product">
+        <!-- Cột 1 -->
+            <el-col :span="16" class="wrap-product">
+                <div v-for="(i , index) in sub_image" :key="index" class="card-product">
+                    <img class="img-product" :src="`/images/product/${i}`" alt="">
+                </div>
+            </el-col>
+    <!-- //Cột 2 -->
         <el-col :span="8" class="padding">
-        <div>
-            <img class="img-product" :src="`/images/product/${product.image}.jpg`" alt="">
-        </div>
-    </el-col>
-    <el-col :span="8" class="padding">
-        <h3>
-            {{product.name}}
-        </h3>
-        <div>
-            <p>{{product.description}}</p>
-        </div>
-    </el-col>
+
+            <div>
+                <p>Chọn size</p>
+                
+            </div>
+
+        </el-col>
+
     </el-row>
 </div>
 
@@ -39,9 +38,14 @@ export default {
   computed : {
       product (){
           return this.$store.state.detailProduct.product
+      },
+      sub_image(){
+          return this.product.sub_image
       }
-      
-  }
+  },
+  mounted() {
+      console.log('this.sub_image :', this.sub_image);
+  },
 }
 </script>
 
@@ -50,35 +54,22 @@ export default {
     margin: 0;
     padding: 0;
 }
-#wrap-detail-product{
+#detail-product-page{
     padding-top: 60px;
 }
+.wrap-detail-product{
+    padding: 20px;
+}
+.wrap-product{
+
+}
+.card-product{
+    width: 50%;
+    float: left;
+    padding: 10px;
+}
+
 .img-product{
     width: 100%;
 }
-
-.el-row {
-    margin-bottom: 20px;
-
-  }
-  .el-col {
-    border-radius: 4px;
-  }
-  .bg-purple-dark {
-    background: #99a9bf;
-  }
-  .bg-purple {
-    background: #d3dce6;
-  }
-  .bg-purple-light {
-    background: #e5e9f2;
-  }
-  .grid-content {
-    border-radius: 4px;
-    min-height: 36px;
-  }
-  .row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
-  }
 </style>

@@ -1,7 +1,9 @@
 <template>
   <div>
-    <h1 class="logo"> LO GO HERE</h1>
-    <hr>
+          <p style=" text-align: center;" class="space-text">Get insider’s access to the 2019 NBA All-Star Weekend
+                with the Jordan All-Star Edition Uniform.</p>
+
+    <h1 class="logo space-text" > LOGO HERE</h1>
   </div>
 
 </template>

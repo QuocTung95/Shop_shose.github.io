@@ -13,6 +13,7 @@ const indexRouter = require('./routes/index');
 const bodyParser = require('body-parser')
 const passport = require('passport')
 const session = require('express-session')
+const FileStore = require('session-file-store')(session);
 const passportSetup = require('./config/passport');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -43,13 +44,25 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000,
   keys: [keys.session.cookieKey]
 }));
+app.use(session({
+  genid: (req) => {
+    console.log('Inside session middleware genid function')
+    console.log(`Request object sessionID from client: ${req.sessionID}`)
+    return uuid() // use UUIDs for session IDs
+  },
+  store: new FileStore(),
+  secret: 'quoctung',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true } // this line
+}))
 app.use(passport.initialize());
 app.use(passport.session());
 
 
 app.get('/private', (req, res) =>{
   if(req.isAuthenticated()){
-    res.send('wellcom')
+    res.send(res.user)
   } else {
     res.send('pls log in')
   }

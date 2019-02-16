@@ -3,7 +3,7 @@ var router = express.Router();
 const brandsRouter = require('./brands');
 const productRouter = require('./products');
 const userRoter = require('./users');
-const cardRouter = require('./cards');
+const cartRouter = require('./carts');
 const loginRouter = require('./login');
 
 
@@ -11,7 +11,7 @@ const loginRouter = require('./login');
 router.use('/', brandsRouter )
 router.use('/', productRouter )
 router.use('/', userRoter)
-router.use('/', cardRouter)
+router.use('/', cartRouter)
 router.use('/', loginRouter)
 
 

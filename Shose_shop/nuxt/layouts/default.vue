@@ -3,13 +3,14 @@
  <!-- HORIZONTAL -->
         <div id="nav_horizontal" >
             <ul>
-                <li><a href=''>Home</a></li>
+              
+                <li> <nuxt-link to="/">Home</nuxt-link></li>
                 <li>
                     <a href='javascript::void(0)' class="none">
-                        Products
+                        me
                         <i class="fa fa-caret-down"></i>
                     </a>
-                    <ul>
+                    <!-- <ul>
                         <li>
                             <a href="">
                                 Product1
@@ -49,9 +50,9 @@
                         </li>
                         <li><a href="">Product3</a></li>
                         <li><a href="">Product4</a></li>
-                    </ul>
+                    </ul> -->
                 </li>
-                <li><a href=''>Services</a></li>
+                <li @click="getCart()"><nuxt-link to="/cart">Giỏ hàng</nuxt-link></li>
                 <li class="info" style="width: 55%;"><a style="float:right;" href='javascript:void(0)' @click="showLogin()">Register</a></li>
             </ul>
         </div>
@@ -71,10 +72,15 @@
 <script>
 import loginModel from "../components/login";
 import footerSide from "../components/footer";
+import leftSide from "../components/leftSideMenu"
+// import Icon from "vue-awesome"
+// import Icon from 'vue-awesome/components/Icon.vue'
 export default {
     components : {
       loginModel : loginModel,
-      footerSide : footerSide
+      footerSide : footerSide,
+      leftSide
+      // Icon
     },
     data() {
       return {
@@ -83,10 +89,46 @@ export default {
         isLogin: false,
       };  
     },
+    computed: {
+      user_id () {
+        return this.$store.state.user_id
+      },
+    },
+    async mounted (){
+        var token =   this.$cookie.get('Bearer')
+        this.$store.dispatch('token', token)
+
+        var user_id =   this.$cookie.get('user_id')
+        this.$store.dispatch('user_id', user_id)
+
+        let  data  = await this.$axios.$get(`http://localhost:8080/cart/${this.user_id}`)
+        this.$store.dispatch('cart/id_productInCart', data.result.product_id )
+        // store.commit('cart', data.response)
+        let total_id = data.result.product_id
+        let allProductInCart = []
+        for(let id of total_id){
+          const product = await this.$axios.$get(`http://localhost:8080/products/${id}`)
+          allProductInCart.push(product.response)
+        }
+        this.$store.dispatch('cart/allProductInCart', allProductInCart)
+    },
+
     methods: {
       showLogin () {
         this.isLogin = !this.isLogin
-      }
+      },
+      async getCart () {
+            let  data  = await this.$axios.$get(`http://localhost:8080/cart/${this.user_id}`)
+            this.$store.dispatch('cart/id_productInCart', data.result.product_id )
+            // store.commit('cart', data.response)
+            let total_id = data.result.product_id
+            let allProductInCart = []
+            for(let id of total_id){
+              const product = await this.$axios.$get(`http://localhost:8080/products/${id}`)
+              allProductInCart.push(product.response)
+            }
+            this.$store.dispatch('cart/allProductInCart', allProductInCart)
+      },
     },
 }
 </script>

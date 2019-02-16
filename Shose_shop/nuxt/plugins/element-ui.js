@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Element from 'element-ui/lib/element-ui.common'
 import locale from 'element-ui/lib/locale/lang/en'
+import VueCookie from 'vue-cookie';
+
+
 // Vue.directive("scroll", {
 //   inserted: function(el, binding) {
 //       let f = function(evt) {
@@ -13,6 +16,8 @@ import locale from 'element-ui/lib/locale/lang/en'
 // });
 
 
+
 export default () => {
   Vue.use(Element, { locale })
+  Vue.use(VueCookie);
 }

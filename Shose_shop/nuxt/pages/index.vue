@@ -7,43 +7,48 @@
     </el-carousel>
 
     <Logo />
-<div class="contaner">
-  <div class="sideContaner contanerLeft" id="leftside" v-bind:class="{ fixed: isfixed}">
-    <p>hihi</p>
-    <p>haha</p>
-  </div>
 
-  <!-- Phần thân show sản phẩm -->
-  <div class="sideContaner contanerRight" id="rightside">
-    <el-row :gutter="5">
-      <el-col :span="6" v-for="(i, index) in products" :key="index">
-        <el-card :body-style="{ padding: '0px' }">
-          <nuxt-link :to="'./detailProduct/' + i.id">
-            <img :src="`/images/product/${i.image}.jpg`" alt="">
-          </nuxt-link>
-          
-          <div style="padding: 14px;">
-            <span>{{i.description}}</span>
-            <div class="bottom clearfix">
-              <time class="time">time</time>
-              <el-button type="text" class="button">Add to card</el-button>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+    <div style="margin-top:50px;">
+      <h3 class="space-left">HOT NHẤT TRONG TUẦN</h3>
+      <el-row>
+        <el-col :span="12" class="best-seller">
+          <img src="../static/images/bestSeller/5aa33afdc94f198feb57aae79329fdd28163a126_banner-2.jpg" alt="">
+          <h3>WOMENS COLLECTION</h3>
+          <button class="btn-blue">Chi tiết</button>
+        </el-col>
+        <el-col :span="12" class="best-seller">
+          <img src="../static/images/bestSeller/c3690c904e6d2d26fbe198e23961c8ecd35e644c_banner-3.jpg" alt="">
+          <h3>WOMENS COLLECTION</h3>
+          <button class="btn-blue">Chi tiết</button>
+        </el-col>
+      </el-row>
+
+      <div style="text-align: center;" class="space-text">Khám phá những sản phẩm mới nhất</div>
+      <div class="child-center">
+        <nuxt-link to="./storeShose">
+          <button style="height: 45px;" class="btn-blue main-color space-text">VÀO SHOP</button>
+        </nuxt-link>
+      </div>
+    </div>
+
+    <!-- parallax -->
+    <div class="parallax"></div>
+    <div style="margin-top:10px;" class="space-text">
+      <h3 class="space-left">VALENTINE VÀ NHỮNG CHUYẾN ĐI CÙNG NHAU</h3>
+    </div>
+    <div class="valentine">
+      <img src="../static/images/bestSeller/2.7_HP_XCAT_VALENTINE'S_DAY_DT_XA_AEM.png" alt="">
+      <div class="text">
+        <h3 class="space-text">WHAT’S NOT TO LOVE?</h3>
+        <p class="space-text">Give Sport this Valentine’s Day.</p>
+      </div>
+        <nuxt-link to="./storeShose">
+          <button style="height: 45px;" class="btn-blue main-color">VÀO SHOP</button>
+        </nuxt-link>
+
+    </div>
 
 
-    <video autoplay="" loop="" playsinline="" class="css-10f9kvm u-full-width u-full-height css-3p6im7" tabindex="-1" muted="">
-      <source src="/videos/video_nike.webm" type="video/webm">
-      <!-- <source src="https://c.static-nike.com/a/videos/q_90/fnpfrqywv44pehh8o1ug/video.mp4" type="video/mp4">
-      <source src="https://c.static-nike.com/a/videos/q_90/fnpfrqywv44pehh8o1ug/video.ogg" type="video/ogg"> -->
-      </video>
-
-
-
-  </div>
-</div>
 
 
 
@@ -56,24 +61,17 @@
 
 <script>
 import Logo from "../components/Logo";
-
 import axios from 'axios'
 // let user = require('../api/users.js')
 export default {
   components : {
     Logo : Logo,
   },
-
-async fetch ({ store }) {
-    let  {data}  = await axios.get('http://localhost:8080/products')
-    store.commit('products', data.response)
-  },
-  mounted(){
-      this.handleScroll()
-      let cooki = document.cookie
-      console.log('cooki :', cooki);
-          },
-
+  //   async fetch ({ store, params }) {
+  //   let { data } = await axios.get('http://localhost:8080/current-user')
+  //   console.log('data :', data);
+  //   // store.commit('setStars', data)
+  // },
 // async asyncData({$axios}) {
 //         const data = await $axios.$get('http://localhost:8080/users/13')
 //         let user = data.response
@@ -103,20 +101,21 @@ async fetch ({ store }) {
   // },
 
     computed: {
-    todos () {
-      return this.$store.state.todos.list
-    },
-    counter (){
-      return this.$store.state.counter
-    },
-    products (){
-      return this.$store.state.products
-    }
+      // Lấy mã tooken user trong cookie
+      
+      // user_id : this.$cookie.get('Bearer') //document.cookie.slice((document.cookie.indexOf('Bearer') + 7 ))
+  },
+  mounted (){
+    var token =   this.$cookie.get('Bearer')
+    this.$store.dispatch('token', token)
+
+    var user_id =   this.$cookie.get('user_id')
+    this.$store.dispatch('user_id', user_id)
   },
   data () {
     return {
       image: '../images/product/sp1.jpg',
-      isfixed: false,
+      // isfixed: false,
         activeIndex: '1',
         activeIndex2: '1',
         form: {
@@ -138,26 +137,13 @@ async fetch ({ store }) {
       };
   },
   methods: {
-
     async  deleteuser(id, index){
       try {
         const response = await this.$axios.$delete(`http://localhost:8080/users/${id}`)
-        this.$store.commit('deleteuser', index)
+        this.$store.dispatch('deleteuser', index)
       } catch (error) {
         console.log('err :');
       }
-    },
-    handleScroll(evt, el) {
-        window.addEventListener("scroll", () => {
-          let element = document.getElementById("leftside")
-          let body = document.getElementById("rightside")
-          if(body.getBoundingClientRect().top < 60){
-            this.isfixed = true
-          }
-          if(body.getBoundingClientRect().top > 60){
-            this.isfixed = false
-          }
-        })
     },
     increa(){
       this.$store.commit('increment')
@@ -174,6 +160,20 @@ async fetch ({ store }) {
 </script>
 
 <style>
+
+.parallax {
+  /* The image used */
+  background-image: url("../static/images/background/Red-Shoes.jpg");
+
+  /* Set a specific height */
+  min-height: 200px; 
+
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
 .contaner{
   position: relative;
   content: "";
@@ -273,4 +273,33 @@ async fetch ({ store }) {
   .clearfix:after {
       clear: both
   }
+
+  .best-seller{
+    padding: 5px;
+    position: relative;
+  }
+   .best-seller img{
+     width: 100%;
+   }
+   .best-seller .btn-blue{
+    position: absolute;
+    top: 57%;
+    left: 14%;
+   }
+   .best-seller .btn-blue:hover{
+     background-color: #27ae61;
+   }
+   .best-seller h3{
+    position: absolute;
+    top: 40%;
+    left: 5%;
+    color: white;
+   }
+   .valentine img{
+     width: 100%;
+   }
+ 
+   .valentine {
+     text-align: center;
+   }
 </style>

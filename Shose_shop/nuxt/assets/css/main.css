@@ -1,6 +1,42 @@
-.text-center{
-    text-align: center;
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body, html{
+    margin: 0;
+    padding: 0;
 }
 .padding{
     padding: 20px;
+}
+#space-top{
+    padding-top: 60px;
+}
+.child-center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.btn-blue{
+    color: #ffffff;
+    text-transform: uppercase;
+    padding: 10px 25px;
+    border: 1px solid #fff;
+    height: 32px;
+    color: #fff !important;
+    background: transparent;
+    text-shadow: none;
+}
+button:hover{
+    cursor: pointer;
+}
+.main-color{
+    background-color: #27ae61;
+}
+.space-text{
+    margin-bottom: 8.138px;
+}
+.space-left{
+    margin-left: 5px;
 }

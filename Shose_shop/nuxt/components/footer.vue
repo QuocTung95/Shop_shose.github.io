@@ -22,11 +22,11 @@ export default {
 
 <style>
 #footer{
-    padding-left: 200px;
-    background-color: rgba(30,67,233,0.18824);
+    /* background-color: rgba(30,67,233,0.18824); */
+        background-color: #111;
 }
 .footer-inside{
-    background-color: #111;
+
     height: 100px;
 }
 .text-center{

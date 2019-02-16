@@ -26,6 +26,9 @@ module.exports = {
       image : {
         type: Sequelize.STRING
       },
+      sub_image : {
+        type: Sequelize.STRING
+      },
     });
   },
   down: (queryInterface, Sequelize) => {

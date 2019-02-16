@@ -7,6 +7,7 @@ module.exports =   (sequelize, DataTypes) => {
     description: { type: DataTypes.INTEGER, field: 'description' },
     gender: { type: DataTypes.INTEGER, field: 'gender' },
     image: { type: DataTypes.INTEGER, field: 'image' },
+    sub_image : {type : DataTypes.STRING, field : 'sub_image'}
   }, {timestamps: false});
   products.associate = function(models) {
     // associations can be defined here

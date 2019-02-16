@@ -1,7 +1,9 @@
 export const state = () => ({
     counter: 0,
     products: [],
-    users : [],
+    token : '',
+    user_id : '',
+    
   })
   
   export const mutations = {
@@ -11,31 +13,29 @@ export const state = () => ({
     products (state, payload) {
       state.products = payload
     },
-    deleteuser (state, index){
+    deleteProduct (state, index){
       state.products.splice(index, 1)
     },
-    users (state , payload){
-      state.users = payload
-    }
-  }
-
-
-  
+    token (state , payload){
+      state.token = payload
+    },
+    user_id (state, payload) {
+      state.user_id = payload
+    },
+  }  
   // ACTION
 
-  // export const actions = {
-  //   add (state, text) {
-  //     state.list.push({
-  //       text: text,
-  //       done: false
-  //     })
-  //   },
-  //   remove (state,  todo ) {
-  //     state.list.splice(state.list.indexOf(todo), 1)
-  //   },
-  //   toggle (state, todo) {
-  //     todo.done = !todo.done
-  //   }
+  export const actions = {
+    deleteProduct ({commit}) {
+      commit('deleteProduct')
+    },
+    token ({commit}, payload){
+      commit('token', payload)
+    },
+    user_id ({commit}, payload){
+      commit('user_id', payload)
+    },
 
 
-  // }
+
+  }
