@@ -4,6 +4,7 @@ import locale from 'element-ui/lib/locale/lang/en'
 import VueCookie from 'vue-cookie';
 
 
+
 // Vue.directive("scroll", {
 //   inserted: function(el, binding) {
 //       let f = function(evt) {

@@ -1,7 +1,23 @@
 <template>
         <div class="sideContaner contanerLeft" id="leftside" v-bind:class="{ fixed: isfixed}">
-            <p>hihi</p>
-            <p>haha</p>
+          <ul>
+            <li><h3>Giới tính</h3> 
+              <ul>
+                <li>Nam</li>
+                <li>Nữ</li>
+              </ul>
+            </li>
+
+
+            <li> <h3>Thương hiệu</h3>
+              <ul>
+                  <li>Nike</li>
+                  <li>Converse</li>
+                  <li>Bitits</li>
+                  <li>Adias</li>
+              </ul>
+            </li>
+          </ul>
         </div>
 
 </template>
@@ -51,7 +67,6 @@ export default {
 
 .sideContaner.contanerLeft {
     width: 200px;
-    position: absolute;
     top: 0px;
     z-index: 4;
     background-color: #bbacac7a;
@@ -64,5 +79,13 @@ export default {
 .sideContaner.fixed{
   position: fixed;
   top: 60px;
+}
+#leftside ul {
+    padding-left: 10px;
+}
+#leftside ul li {
+    list-style: none;
+    padding-bottom: 5px;
+    padding-top: 9px;
 }
 </style>

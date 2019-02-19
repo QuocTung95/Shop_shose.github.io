@@ -8,7 +8,7 @@
 
     <Logo />
 
-    <div style="margin-top:50px;">
+    <div class="hot-product space-top">
       <h3 class="space-left">HOT NHẤT TRONG TUẦN</h3>
       <el-row>
         <el-col :span="12" class="best-seller">
@@ -33,6 +33,13 @@
 
     <!-- parallax -->
     <div class="parallax"></div>
+
+    <!-- slide sản phẩm -->
+ 
+    <sildeHotProduct/>
+
+
+
     <div style="margin-top:10px;" class="space-text">
       <h3 class="space-left">VALENTINE VÀ NHỮNG CHUYẾN ĐI CÙNG NHAU</h3>
     </div>
@@ -61,11 +68,13 @@
 
 <script>
 import Logo from "../components/Logo";
+import sildeHotProduct from "../components/hotSlidePproduct"
 import axios from 'axios'
 // let user = require('../api/users.js')
 export default {
   components : {
     Logo : Logo,
+    sildeHotProduct
   },
   //   async fetch ({ store, params }) {
   //   let { data } = await axios.get('http://localhost:8080/current-user')
@@ -114,6 +123,29 @@ export default {
   },
   data () {
     return {
+      banners: [
+          '/1.jpg',
+          '/2.jpg',
+          '/3.jpg'
+        ],
+        swiperOption: {
+          loop: true,
+          slidesPerView: 'auto',
+          centeredSlides: true,
+          spaceBetween: 30,
+          pagination: {
+            el: '.swiper-pagination',
+            dynamicBullets: true
+          },
+          on: {
+            slideChange() {
+              console.log('onSlideChangeEnd', this);
+            },
+            tap() {
+              console.log('onTap', this);
+            }
+          }
+        },
       image: '../images/product/sp1.jpg',
       // isfixed: false,
         activeIndex: '1',
@@ -191,7 +223,6 @@ export default {
 
 .sideContaner.contanerLeft {
     width: 200px;
-    position: absolute;
     top: 0px;
     z-index: 4;
     background-color: #bbacac7a;
@@ -213,6 +244,11 @@ export default {
 }
 .galaryImage img {
   height: 100%;
+}
+
+.hot-product {
+  margin-top:50px;
+  background-color: #ebddec9e;
 }
   .el-carousel__item h3 {
     color: #475669;
@@ -302,4 +338,5 @@ export default {
    .valentine {
      text-align: center;
    }
+
 </style>

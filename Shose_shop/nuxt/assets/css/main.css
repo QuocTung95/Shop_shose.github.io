@@ -40,3 +40,7 @@ button:hover{
 .space-left{
     margin-left: 5px;
 }
+.space-bettwen {
+    display: flex;
+    justify-content: space-between;
+}

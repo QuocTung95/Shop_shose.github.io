@@ -52,7 +52,7 @@
                         <li><a href="">Product4</a></li>
                     </ul> -->
                 </li>
-                <li @click="getCart()"><nuxt-link to="/cart">Giỏ hàng</nuxt-link></li>
+                <li @click="getCart()"><nuxt-link to="/cart"><i class="icon ion-document"></i></nuxt-link></li>
                 <li class="info" style="width: 55%;"><a style="float:right;" href='javascript:void(0)' @click="showLogin()">Register</a></li>
             </ul>
         </div>

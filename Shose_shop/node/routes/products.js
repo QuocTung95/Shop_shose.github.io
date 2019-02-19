@@ -65,7 +65,7 @@ router.put('/products/:id', cors() , async (req, res, next) =>{
     }
 })
 
-router.post('/upload', cors() , upload.single('images'), async (req, res) => {
+router.post('/upload', cors() ,  upload.array('images', 10), async (req, res) => {
     const data = req.body;
     // validation cho data
     try {
