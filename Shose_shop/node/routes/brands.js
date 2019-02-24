@@ -1,7 +1,8 @@
 var express = require('express');
 const db = require('../models')
 const brands = db.brands;
-const typeProducts = db.typeProducts
+// const typeProducts = db.typeProducts
+const products = db.products
 // const TypeProducts = db.TypeProducts;
 
 var cors = require('cors')
@@ -37,8 +38,8 @@ router.get('/brands/:id', async (req, res) => {
                 id: id
             },
             include: {
-                model: typeProducts,
-                as: 'typeProducts',
+                model: products,
+                as: 'products',
                 required: false
             }
         });

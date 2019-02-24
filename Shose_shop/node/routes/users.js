@@ -154,6 +154,16 @@ router.delete('/deleteuser/:id', async (req, res) => {
   }
 })
 
+// DELETE ALL USER
+router.delete('/deletealluser', async (req, res) => {
+  try {
+    const response = await User.destroy({   where: {},
+      truncate: true })
+    res.status(200).json({ httpCode: 200, message: "xoa tất cả user thanh cong" });
+  } catch (error) {
+    throw Error(error.message)
+  }
+})
 
 
 

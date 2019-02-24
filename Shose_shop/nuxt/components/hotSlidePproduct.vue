@@ -1,111 +1,67 @@
 <template>
-<div>
-	<div class="swiper-container gallery-top">
-			<div class="swiper-wrapper">
-					<div class="swiper-slide"><div class="swiper-slide-container">Slide 1</div></div>
-    <div class="swiper-slide"><div class="swiper-slide-container">Slide 2</div></div>
-    <div class="swiper-slide"><div class="swiper-slide-container">Slide 3</div></div>
-    <div class="swiper-slide"><div class="swiper-slide-container">Slide 4</div></div>
-    <div class="swiper-slide"><div class="swiper-slide-container">Slide 5</div></div>
-			</div>
-			<!-- Add Arrows -->
-			<div class="swiper-button-next"></div>
-			<div class="swiper-button-prev"></div>
-	</div>
-	<div class="swiper-container gallery-thumbs">
-			<div class="swiper-wrapper">
-					<div class="swiper-slide"><div class="swiper-slide-container">Slide 1</div></div>
-    <div class="swiper-slide"><div class="swiper-slide-container">Slide 2</div></div>
-    <div class="swiper-slide"><div class="swiper-slide-container">Slide 3</div></div>
-    <div class="swiper-slide"><div class="swiper-slide-container">Slide 4</div></div>
-    <div class="swiper-slide"><div class="swiper-slide-container">Slide 5</div></div>
-			</div>
-	</div>
+  <div class="block fitheight space-section-top ">
+    <h3>HOT TREND</h3>
+    <el-carousel indicator-position="outside" class="wrap-hot-product fitheight">
+      <el-carousel-item  class="fitheight" v-for="item in 4" :key="item">
+        <div class="product-in-face clearfix fitheight" >
+          <div class="item fitheight" v-for="(i , index) in hotProducts" :key="index">
+            <!-- <img class="fitheight" :src="`/images/allProduct/${i.name}`" alt=""> -->
+            <el-card shadow="hover" :body-style="{ padding: '0px' }" class="fitheight">
+              <nuxt-link :to="'./detailProduct/' + i.id">
+              <img class="fitheight" :src="`/images/detailProduct/${i.image}/${i.image}`" alt="">
+              </nuxt-link> 
+              <p>{{i.name}}</p>
+              <p>{{i.price}}</p>
+            </el-card>
+          </div>
+        </div>
+      </el-carousel-item>
+    </el-carousel>
   </div>
 </template>
-
 <script>
-  export default {
-    mounted() {
-      var galleryTop = new Swiper('.gallery-top', {
-      spaceBetween: 10,
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-	 		loop: true,
-			loopedSlides: 4
-    });
-    var galleryThumbs = new Swiper('.gallery-thumbs', {
-      spaceBetween: 10,
-      centeredSlides: true,
-      slidesPerView: 'auto',
-      touchRatio: 0.2,
-      slideToClickedSlide: true,
-			loop: true,
-			loopedSlides: 4
-    });
-    galleryTop.controller.control = galleryThumbs;
-    galleryThumbs.controller.control = galleryTop;
-    },
-  }
+export default {
+  computed : {
+          hotProducts () {
+        return this.$store.state.hotProducts
+      }
+  },
+  data() {
+    return {
+      	hotProduct : [
+					{name : '162050_shot1.jpg'},
+					{name : '162054_standard.jpg'},
+					{name : '162058_standard.jpg'},
+          {name : '162060_standard.jpg'},
+          {name : '162054_standard.jpg'},
+				]
+    }
+  },
+}
 </script>
 
-
-<style lang="scss" scoped>
-  body {
-	background: #eee;
-	font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-	font-size: 14px;
-	color:#000;
-	margin: 0;
-	padding: 0;
-	height: 300px;
+<style scoped>
+.block {
+  height: 100%;
+  padding: 0px 15px;
 }
-.swiper-container {
-		width: 100%;
-		height: 300px;
-		margin: 20px auto;
+.wrap-hot-product {
+  height: 100%;
 }
-
-.swiper-slide-container {
-  text-align: center;
-	font-size: 18px;
-	background: #fff;
-  height:100%;
-  max-width: 600px;
-  margin:auto;
-		/* Center slide text vertically */
-		display: -webkit-box;
-		display: -ms-flexbox;
-		display: -webkit-flex;
-		display: flex;
-		-webkit-box-pack: center;
-		-ms-flex-pack: center;
-		-webkit-justify-content: center;
-		justify-content: center;
-		-webkit-box-align: center;
-		-ms-flex-align: center;
-		-webkit-align-items: center;
-		align-items: center;
-}
-
-.gallery-top {
-		height: 80%;
-		width: 100%;
-}
-.gallery-thumbs {
-		height: 20%;
-		box-sizing: border-box;
-		padding: 10px 0;
-}
-.gallery-thumbs .swiper-slide {
-		width: 20%;
-		height: 100%;
-		opacity: 0.4;
-}
-.gallery-thumbs .swiper-slide-active {
-		opacity: 1;
-}
-
+  .product-in-face{
+  }
+  .item {
+    float: left;
+    width: 20%;
+    padding: 5px;
+  }
+  .product-in-face .item img {
+    height: 150px;
+  }
+  .wrap-hot-product .el-carousel__container{
+    height: 100%;
+  }
+  .wrap-hot-product .el-carousel__item {
+    background-color: white!important;
+  }
 </style>

@@ -15,12 +15,8 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      // { rel: 'stylesheet',
-      //   href : 'http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css',
-      //   // href: 'https://unpkg.com/ionicons@4.2.2/dist/css/ionicons.min.css'
-      // }
     ],
-    script: [{ src: "https://unpkg.com/ionicons/dist/ionicons.js", body: true }]
+    script: [{ src: "https://unpkg.com/ionicons/dist/ionicons.js", body: true },]
   },
 
   /*

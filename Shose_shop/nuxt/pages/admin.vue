@@ -16,15 +16,28 @@
     <el-form-item label="price" >
         <el-input id="price" type="text"  autocomplete="off"></el-input>
     </el-form-item>
+    <el-form-item label="old_price" >
+        <el-input id="old_price" type="text"  autocomplete="off"></el-input>
+    </el-form-item>
     <el-form-item label="description" >
         <el-input id="description" type="text"  autocomplete="off"></el-input>
     </el-form-item>
 
 
     <el-form-item label="gender">
-        <el-radio v-model="gender" label="true">Nam</el-radio>
-        <el-radio v-model="gender" label="false">Nữ</el-radio>
+        <el-radio v-model="gender" label="Nam">Nam</el-radio>
+        <el-radio v-model="gender" label="Nữ">Nữ</el-radio>
     </el-form-item>
+
+    <el-form-item label="Hot_product">
+        <el-radio v-model="hot_product" label="True">yes</el-radio>
+        <el-radio v-model="hot_product" label="False">No</el-radio>
+    </el-form-item>
+
+    <el-form-item>
+        sale_off: <el-input id="sale_off" type="text"  autocomplete="off"></el-input>
+    </el-form-item>
+
     <el-form-item>
       Hình ảnh chính :  <el-input id="imgUpload" type="file" name="images"></el-input>
     </el-form-item>
@@ -51,6 +64,7 @@ export default {
         return {
             type_id : '',
             gender : '',
+            hot_product : '',
             fileList: []
     }
     },
@@ -59,18 +73,27 @@ export default {
             try {
                 let arrImage = document.getElementById('arrImage')
                 let sub_imageName = []
+                let kq = ''
                 for (let i in arrImage.files){
                     sub_imageName.push(arrImage.files[i].name)
-                    // console.log('i.file.File :', arrImage.files[i].name);
+                    
                 }
+                for(let j in sub_imageName) {
+                    kq += sub_imageName[j] + ","
+                }
+                // console.log('kq :', '{' + kq.slice(0, -16) + '}');
                 const product = await this.$axios.$post('http://localhost:8080/upload', {
                 name: document.getElementById('name').value,
                 type_id: this.type_id,
                 price : document.getElementById('price').value,
+                old_price : document.getElementById('old_price').value,
                 description : document.getElementById('description').value,
                 gender : this.gender,
                 image : document.getElementById('imgUpload').files[0].name,
-                sub_image : sub_imageName
+                hot_product : this.hot_product,
+                sale_off : document.getElementById('sale_off').value,
+                sub_image: '{' + kq.slice(0, -16) + '}' //// Vì upload image sẽ có thêm 2 trường phụ
+                // sub_image : Object.assign({}, sub_imageName.slice(0, -2)) // Vì upload image sẽ có thêm 2 obj phụ
                 })
                 if(product){
                     this.$message({

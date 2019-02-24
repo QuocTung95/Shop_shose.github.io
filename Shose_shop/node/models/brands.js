@@ -5,8 +5,8 @@ module.exports =   (sequelize, DataTypes) => {
   }, {timestamps: false});
   brands.associate = function(models) {
     // associations can be defined here
-    brands.hasMany(models.typeProducts, {
-      foreignKey: 'brand_id',
+    brands.hasMany(models.products, {
+      foreignKey: 'type_id',
       sourceKey: 'id'
     });
   };

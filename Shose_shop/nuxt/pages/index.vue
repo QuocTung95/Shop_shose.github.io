@@ -1,66 +1,38 @@
 <template>
-<section>
-    <el-carousel :interval="5000" arrow="always">
+<section id="index">
+    <!-- <el-carousel class="banner"  :interval="5000" arrow="always">
     <el-carousel-item v-for="item in 4" :key="item">
-      <img src="../static/images/banner1.jpg" alt="">
+      <img src="/images/banner1.jpg" alt="">
     </el-carousel-item>
-    </el-carousel>
+    </el-carousel> -->
+    <div>
+        <video width="100%" height="550px" autoplay muted loop id="myVideo">
+          <source src="https://nikevideo.nike.com/72451143001/201902/1812/72451143001_6001924534001_6001915084001.mp4" type="video/mp4">
+        </video>
+    </div>
 
+    <!-- <div>
+      <video width="100%" height="650px" autoplay loop >
+        <source src="https://nikevideo.nike.com/72451143001/201902/1812/72451143001_6001924534001_6001915084001.mp4" type="video/mp4">
+      </video>
+    </div> -->
     <Logo />
 
-    <div class="hot-product space-top">
-      <h3 class="space-left">HOT NHẤT TRONG TUẦN</h3>
-      <el-row>
-        <el-col :span="12" class="best-seller">
-          <img src="../static/images/bestSeller/5aa33afdc94f198feb57aae79329fdd28163a126_banner-2.jpg" alt="">
-          <h3>WOMENS COLLECTION</h3>
-          <button class="btn-blue">Chi tiết</button>
-        </el-col>
-        <el-col :span="12" class="best-seller">
-          <img src="../static/images/bestSeller/c3690c904e6d2d26fbe198e23961c8ecd35e644c_banner-3.jpg" alt="">
-          <h3>WOMENS COLLECTION</h3>
-          <button class="btn-blue">Chi tiết</button>
-        </el-col>
-      </el-row>
+        <!-- slide sản phẩm -->
+       <sildeHotProduct/>
+    <!-- Hot trend product -->
+    <div class="text-title">HOT NHẤT TRONG TUẦN</div>
+    <hotTrendProduct/>
 
-      <div style="text-align: center;" class="space-text">Khám phá những sản phẩm mới nhất</div>
-      <div class="child-center">
-        <nuxt-link to="./storeShose">
-          <button style="height: 45px;" class="btn-blue main-color space-text">VÀO SHOP</button>
-        </nuxt-link>
-      </div>
-    </div>
-
-    <!-- parallax -->
+        <!-- parallax -->
     <div class="parallax"></div>
 
-    <!-- slide sản phẩm -->
- 
-    <sildeHotProduct/>
-
-
-
-    <div style="margin-top:10px;" class="space-text">
-      <h3 class="space-left">VALENTINE VÀ NHỮNG CHUYẾN ĐI CÙNG NHAU</h3>
-    </div>
-    <div class="valentine">
-      <img src="../static/images/bestSeller/2.7_HP_XCAT_VALENTINE'S_DAY_DT_XA_AEM.png" alt="">
-      <div class="text">
-        <h3 class="space-text">WHAT’S NOT TO LOVE?</h3>
-        <p class="space-text">Give Sport this Valentine’s Day.</p>
-      </div>
-        <nuxt-link to="./storeShose">
-          <button style="height: 45px;" class="btn-blue main-color">VÀO SHOP</button>
-        </nuxt-link>
-
-    </div>
-
-
-
-
-
-
-
+     <!-- Event in month -->
+     <event/>
+         <!-- Service -->
+     <!-- <service /> -->
+     <!-- Footer here -->
+     <!-- <footerEnd/> -->
 </section>
 
 
@@ -70,17 +42,24 @@
 import Logo from "../components/Logo";
 import sildeHotProduct from "../components/hotSlidePproduct"
 import axios from 'axios'
-// let user = require('../api/users.js')
+import service from '../components/service'
+import event from '../components/event'
+import footerEnd from '../components/footer'
+import hotTrendProduct from '../components/hotTrend'
 export default {
   components : {
     Logo : Logo,
-    sildeHotProduct
+    sildeHotProduct,
+    service,
+    hotTrendProduct,
+    event,
+    footerEnd,
   },
-  //   async fetch ({ store, params }) {
-  //   let { data } = await axios.get('http://localhost:8080/current-user')
-  //   console.log('data :', data);
-  //   // store.commit('setStars', data)
-  // },
+    async fetch ({ store, params }) {
+    let { data } = await axios.get('http://localhost:8080/hotProduct')
+    console.log('hotproduct :', data.response);
+    store.dispatch('hotProducts', data.response)
+  },
 // async asyncData({$axios}) {
 //         const data = await $axios.$get('http://localhost:8080/users/13')
 //         let user = data.response
@@ -110,9 +89,7 @@ export default {
   // },
 
     computed: {
-      // Lấy mã tooken user trong cookie
-      
-      // user_id : this.$cookie.get('Bearer') //document.cookie.slice((document.cookie.indexOf('Bearer') + 7 ))
+
   },
   mounted (){
     var token =   this.$cookie.get('Bearer')
@@ -177,16 +154,6 @@ export default {
         console.log('err :');
       }
     },
-    increa(){
-      this.$store.commit('increment')
-    },
-    addTodo (e) {
-      this.$store.commit('todos/add', e.target.value)
-      e.target.value = ''
-    },
-    doneac (todo) {
-      this.$store.commit('todos/toggle', todo)
-    }
   }
 }
 </script>
@@ -195,7 +162,7 @@ export default {
 
 .parallax {
   /* The image used */
-  background-image: url("../static/images/background/Red-Shoes.jpg");
+  background-image: url("../static/images/background/paralax.jpg");
 
   /* Set a specific height */
   min-height: 200px; 
@@ -215,7 +182,7 @@ export default {
 }
 .sideContaner {
     height: 1000px;
-    background-color: #1e43e930;
+    /* background-color: #1e43e930; */
     box-sizing: border-box;
     padding: 5px;
     
@@ -223,9 +190,7 @@ export default {
 
 .sideContaner.contanerLeft {
     width: 200px;
-    top: 0px;
-    z-index: 4;
-    background-color: #bbacac7a;
+    /* background-color: #bbacac7a; */
 }
 
 .sideContaner.contanerRight {
@@ -246,18 +211,14 @@ export default {
   height: 100%;
 }
 
-.hot-product {
-  margin-top:50px;
-  background-color: #ebddec9e;
-}
   .el-carousel__item h3 {
     color: #475669;
     font-size: 18px;
     opacity: 0.75;
     margin: 0;
   }
-  .el-carousel__container{
-    height: 650px;
+  .banner .el-carousel__container{
+    height: 650px!important;
   }
 
   .el-carousel__item:nth-child(2n) {
@@ -331,12 +292,12 @@ export default {
     left: 5%;
     color: white;
    }
-   .valentine img{
-     width: 100%;
-   }
- 
-   .valentine {
-     text-align: center;
-   }
+   #myVideo {
+  width: 100%    !important;
+  height: auto   !important;
+}
 
+.el-carousel__indicator{
+  /* background-image: url('../static/images/background/Footer-Background-ocean.jpg') */
+}
 </style>

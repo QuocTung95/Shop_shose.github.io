@@ -4,56 +4,13 @@
         <div id="nav_horizontal" >
             <ul>
               
-                <li> <nuxt-link to="/">Home</nuxt-link></li>
+                <li> <nuxt-link to="/">HOME</nuxt-link></li>
                 <li>
-                    <a href='javascript::void(0)' class="none">
-                        me
-                        <i class="fa fa-caret-down"></i>
-                    </a>
-                    <!-- <ul>
-                        <li>
-                            <a href="">
-                                Product1
-                                <i class="fa fa-caret-right right"></i>
-                            </a>
-                            <ul>
-                                <li>
-                                    <a href="">Product1Product1Prod uct1Product1Produc t1Product1Product1Product1Product1  </a>
-                                    <ul>
-                                        <li><a href="">Product1</a></li>
-                                        <li><a href="">Product2</a></li>
-                                        <li><a href="">Product3</a></li>
-                                        <li><a href="">Product4</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="">Product2</a></li>
-                                <li><a href="">Product3</a></li>
-                                <li><a href="">Product4</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="">Product2</a>
-                            <ul>
-                                <li>
-                                    <a href="">Product2</a>
-                                    <ul>
-                                        <li><a href="">Product1</a></li>
-                                        <li><a href="">Product2</a></li>
-                                        <li><a href="">Product3</a></li>
-                                        <li><a href="">Product4</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="">Product2</a></li>
-                                <li><a href="">Product3</a></li>
-                                <li><a href="">Product4</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="">Product3</a></li>
-                        <li><a href="">Product4</a></li>
-                    </ul> -->
+                    <nuxt-link to="./storeShose">SHOP</nuxt-link>
                 </li>
-                <li @click="getCart()"><nuxt-link to="/cart"><i class="icon ion-document"></i></nuxt-link></li>
-                <li class="info" style="width: 55%;"><a style="float:right;" href='javascript:void(0)' @click="showLogin()">Register</a></li>
+                <li v-if="user_id" class="getcart" @click="getCart()"><nuxt-link to="/cart"><ion-icon name="cart"></ion-icon> </nuxt-link></li>
+                <li v-if="user_id" class="info"><a style="float:right;" href='javascript:void(0)' @click="logout()">ĐĂNG XUẤT</a></li>
+                <li v-else class="info"><a style="float:right;" href='javascript:void(0)' @click="showLogin()">ĐĂNG NHẬP</a></li>
             </ul>
         </div>
 
@@ -61,10 +18,12 @@
 
 
     <nuxt/>
+    <leftSide style="display: none;"/>
 
     <!-- FOOTER -->
 
     <footerSide />
+
 
   </div>
 </template>
@@ -89,12 +48,28 @@ export default {
         isLogin: false,
       };  
     },
+    created() {
+    // window.addEventListener('keydown', (e) => {
+    //   if (e.key == 'Escape') {
+    //     this.isLogin = false
+    //   }
+    // });
+
+    },
     computed: {
       user_id () {
         return this.$store.state.user_id
       },
     },
     async mounted (){
+          window.addEventListener('keydown', (e) => {
+      if (e.key == 'Escape') {
+        this.isLogin = false
+      }
+      if(this.user_id) {
+        this.isLogin = false
+      }
+    });
         var token =   this.$cookie.get('Bearer')
         this.$store.dispatch('token', token)
 
@@ -129,6 +104,23 @@ export default {
             }
             this.$store.dispatch('cart/allProductInCart', allProductInCart)
       },
+      async  logout(){
+          try {
+              await this.$axios.$get("http://localhost:8080/logout")
+                  this.$message({
+                  type: 'success',
+                  message: 'logout Success'
+              });
+                  // xóa token và user_id ở store và cookie
+                  this.$cookie.delete('Bearer');
+                  this.$store.dispatch('token', '')
+
+                  this.$cookie.delete('user_id');
+                  this.$store.dispatch('user_id', '')
+          } catch (error) {
+              throw Error(error.message)
+          }
+    },
     },
 }
 </script>
@@ -137,6 +129,7 @@ export default {
 html {
   font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, sans-serif;
+    
   font-size: 16px;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
@@ -196,10 +189,29 @@ html {
   position: relative;
 }
 #nav_horizontal ul li a {
-  text-decoration: none;
-  color: #ffffff;
-  padding: 20px 30px;
-  display: inline-block;
+    color: #fff;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 0.15em;
+    display: inline-block;
+    padding: 15px 20px;
+    position: relative;
+}
+#nav_horizontal ul li a:after {
+    background: none repeat scroll 0 0 transparent;
+    bottom: 0;
+    content: "";
+    display: block;
+    height: 2px;
+    left: 50%;
+    position: absolute;
+    background: #fff;
+    transition: width 0.3s ease 0s, left 0.3s ease 0s;
+    width: 0;
+}
+#nav_horizontal ul li a:hover:after {
+    width: 100%;
+    left: 0;
 }
 #nav_horizontal ul li:hover > ul {
   display: block;
@@ -207,7 +219,7 @@ html {
 }
 #nav_horizontal > ul > li {
   float: left;
-  width: 15%;
+  width: 18%;
 }
 #nav_horizontal > ul > li ul {
   position: absolute;
@@ -245,5 +257,14 @@ html {
 }
 #nav_horizontal > ul > li .info{
   width: 55%
+}
+
+
+/* ////// */
+.getcart{
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+    width: 45%!important;
 }
 </style>

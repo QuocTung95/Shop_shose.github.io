@@ -15,14 +15,13 @@
             <el-form-item label="Password">
                 <el-input type="password" name="password" v-model="password" autocomplete="on"></el-input>
             </el-form-item>
-            <el-button @click="register()" type="primary" >Register</el-button>
-            <el-button @click="login()" type="primary" >Login</el-button>
-            <el-button style="left: 70%;" @click="logout()" type="primary" >logout</el-button>
-
+            <el-button v-if="isAccount" @click="login()" type="primary" >Đăng nhập</el-button>
+            <p v-if="isAccount" @click="changToRegister()" style="padding-left: 6%; cursor: pointer;">Bạn chưa có tài khoản?</p>
+            <i @click="changeToLogin()" v-if="!isAccount"  class="el-icon-back " style="padding-left: 6%; cursor: pointer;"></i>
+            <el-button v-if="!isAccount" @click="register()" type="primary" >Đăng ký</el-button>
             <!-- <el-button @click="login()" type="primary" >Register</el-button> -->
         </el-form>
         </div>
-        
   </div>
 
 </template>
@@ -36,6 +35,7 @@
                 right: 'right',
                 password: '',
                 email: '',
+                isAccount : true
             }
         },
         watch: {
@@ -48,7 +48,12 @@
         },
         mounted (){
              let user = JSON.parse(localStorage.getItem('user'));
-            console.log('object :', user);
+            
+        },
+        computed: {
+            user_id () {
+                return this.$store.state.user_id
+      },
         },
     
     methods: {
@@ -66,6 +71,8 @@
             user_id : response.result.id,
             product_id : [0]
         })
+        this.login()
+        
         } else {
             this.$message({
             type: 'error',
@@ -85,7 +92,7 @@
         if(user.status === true){
             this.$message({
             type: 'success',
-            message: 'Login Success'
+            message: 'Success'
         });
             // this.$axios.setHeader('x-access-token', `${user.token}`)
             // Set token và user_id cho user vào store và cooki trong vòng 1 ngày
@@ -102,7 +109,7 @@
         else{
             this.$message({
             type: 'error',
-            message: 'Email or password'
+            message: user.message
         });
         }
 
@@ -127,6 +134,13 @@
         throw Error(error.message)
     }
     },
+    changToRegister() {
+        this.isAccount = false
+    },
+    changeToLogin () {
+        this.isAccount = true
+    },
+
 
 
 }
@@ -144,13 +158,15 @@
     width: 70%;
     background-color: #456c82ad;
     height: 206px;
-    border-radius: 3%;
     display: none;
 }
 .el-button--primary{
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+}
+.el-form-item__label {
+    color: black
 }
 
 

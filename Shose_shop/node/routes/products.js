@@ -37,6 +37,7 @@ router.get('/products', cors(), async (req, res, next) => {
         throw Error(error.message)
     }
 })
+// get product by id
 router.get('/products/:id', cors(), async (req, res, next) => {
     const {id} = req.params
     try {
@@ -46,6 +47,66 @@ router.get('/products/:id', cors(), async (req, res, next) => {
         throw Error(error.message)
     }
 })
+
+// get product by gender boy
+router.get('/products_boy', cors(), async (req, res, next) => {
+  try {
+      const response = await Products.findAll({where : {gender : "Nam"} || {gender : "nam"}});
+      res.status(200).json({ response})
+  } catch (error) {
+      throw Error(error.message)
+  }
+})
+
+// get product boy by price DESC
+router.get('/products_boy_desc', cors(), async (req, res, next) => {
+  try {
+      const response = await Products.findAll({where : {gender : "Nam"} || {gender : "nam"},
+      order: [
+        ['price.' , 'DESC'],
+        ],
+    });
+      res.status(200).json({ response})
+  } catch (error) {
+      throw Error(error.message)
+  }
+})
+
+// get product by gender girl
+router.get('/products_girl', cors(), async (req, res, next) => {
+  try {
+      const response = await Products.findAll({where : {gender : "Nữ"} || {gender : "nữ"}});
+      res.status(200).json({ response})
+  } catch (error) {
+      throw Error(error.message)
+  }
+})
+
+// get hot-product
+router.get('/hotProduct', cors(), async (req, res, next) => {
+
+
+  try {
+      const response = await Products.findAll({where : {hot_product : true}});
+      res.status(200).json({ response})
+  } catch (error) {
+      throw Error(error.message)
+  }
+})
+
+// get by brand
+router.get('/productsBrand/:name', cors(), async (req, res, next) => {
+  const {name} = req.params
+  try {
+      const response = await Products.findAll({where : {brand}});
+      res.status(200).json({ response})
+  } catch (error) {
+      throw Error(error.message)
+  }
+})
+
+
+
 router.put('/products/:id', cors() , async (req, res, next) =>{
     const data = req.body;
     const {id} = req.params;
@@ -79,56 +140,66 @@ router.post('/upload', cors() ,  upload.array('images', 10), async (req, res) =>
     }
 })
 
-// DELETE PRODUCT
-router.delete('/product/delete/:id', async (req, res) => {
+// DELETE PRODUCT BY ID
+router.delete('/product/delete/:id', cors(), async (req, res) => {
   const { id } = req.params;
   try {
-    const response = await Products.destroy({ where: { id } })
-    res.status(200).json({ httpCode: 200, message: "xoa thanh cong" });
+    const product = await Products.findOne({ where: { id } })
+    if(product){
+      const response = await Products.destroy({ where: { id } })
+      res.status(200).json({ httpCode: 200,product, message: "xoa thanh cong" });
+    }
+  } catch (error) {
+    throw Error(error.message)
+  }
+})
+
+// DELETE ALL PRODUCT
+router.delete('/products', cors(), async (req, res) => {
+  try {
+      const response = await Products.destroy({ where: {}, truncate: true })
+      res.status(200).json({ httpCode: 200, message: "xoa tất cả thanh cong" });
   } catch (error) {
     throw Error(error.message)
   }
 })
 
 
-// router.get('/upload', function(req, res) {
-//   res.sendFile(__dirname + '/index.html');
-// })
 
 
-// router.get('/brands/:id', cors(), async (req, res, next) => {
-//     const {id} = req.params;
-//     try {
-//         const response = await Brands.findAll({
-//             // attributes
-//             where : {id},
-//             include : {
-//                 model: TypeProducts,
-//                 as: 'types',
-//                 required: false
-//             }
-//         });
-//         if (response.length > 0) {
-//             res.json({
-//                 result: 'ok',
-//                 data: response[0],
-//                 message: "query list of type successfully"
-//             });
-//         } else {
-//             res.json({
-//                 result: 'failed',
-//                 data: {},
-//                 message: "Cannot find Todo to show"
-//             });
-//         }
-//     } catch (error) {
-//         res.json({
-//             result: 'failed',
-//             data: {},
-//             message: `query list of failed. Error: ${error}`
-//         });
-//     }
-// })
+router.get('/typeProduct/:id', cors(), async (req, res, next) => {
+    const {id} = req.params;
+    try {
+        const response = await Brands.findAll({
+            // attributes
+            where : {id},
+            include : {
+                model: TypeProducts,
+                as: 'types',
+                required: false
+            }
+        });
+        if (response.length > 0) {
+            res.json({
+                result: 'ok',
+                data: response[0],
+                message: "query list of type successfully"
+            });
+        } else {
+            res.json({
+                result: 'failed',
+                data: {},
+                message: "Cannot find Todo to show"
+            });
+        }
+    } catch (error) {
+        res.json({
+            result: 'failed',
+            data: {},
+            message: `query list of failed. Error: ${error}`
+        });
+    }
+})
 
 
 

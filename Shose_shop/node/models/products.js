@@ -4,14 +4,17 @@ module.exports =   (sequelize, DataTypes) => {
     name: { type: DataTypes.STRING, field: 'name' },
     type_id: { type: DataTypes.INTEGER, field: 'type_id' },
     price: { type: DataTypes.INTEGER, field: 'price' },
-    description: { type: DataTypes.INTEGER, field: 'description' },
-    gender: { type: DataTypes.INTEGER, field: 'gender' },
-    image: { type: DataTypes.INTEGER, field: 'image' },
+    old_price: { type: DataTypes.INTEGER, field: 'old_price' },
+    description: { type: DataTypes.STRING, field: 'description' },
+    gender: { type: DataTypes.STRING, field: 'gender' },
+    image: { type: DataTypes.STRING, field: 'image' },
+    sale_off : { type: DataTypes.STRING, field: 'sale_off' },
+    hot_product : { type: DataTypes.BOOLEAN, field: 'hot_product' },
     sub_image : {type : DataTypes.STRING, field : 'sub_image'}
   }, {timestamps: false});
   products.associate = function(models) {
     // associations can be defined here
-    products.belongsTo(models.typeProducts, {
+    products.belongsTo(models.brands, {
       foreignKey: 'type_id',
       sourceKey: 'id'
     });

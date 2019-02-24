@@ -17,10 +17,19 @@ module.exports = {
       price : {
         type: Sequelize.STRING
       },
+      old_price : {
+        type: Sequelize.STRING
+      },
       description : {
         type: Sequelize.STRING
       },
       gender : {
+        type: Sequelize.STRING
+      },
+      sale_off : {
+        type: Sequelize.STRING
+      },
+      hot_product : {
         type: Sequelize.BOOLEAN
       },
       image : {
